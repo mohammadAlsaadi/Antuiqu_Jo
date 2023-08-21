@@ -5,9 +5,9 @@ class OwnersInfo {
   String ownerUUID;
   String ownerFullName;
   String ownerPhoneNumber;
-
   String ownerShopName;
-  CustomersInfo({
+
+  OwnersInfo({
     required this.ownerEmail,
     required this.ownerPassword,
     required this.ownerUUID,
@@ -24,7 +24,6 @@ class OwnersInfo {
       'ownerFullName': ownerFullName,
       'ownerPhoneNumber': ownerPhoneNumber,
       'ownerShopName': ownerShopName,
-      
     };
   }
 
@@ -36,7 +35,6 @@ class OwnersInfo {
       ownerFullName: json['ownerFullName'],
       ownerPhoneNumber: json['ownerPhoneNumber'],
       ownerShopName: json['ownerShopName'],
-      
     );
   }
 }

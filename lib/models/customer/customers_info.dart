@@ -8,6 +8,7 @@ class CustomersInfo {
   String? bookedCarID;
   String customerAge;
   String customerGender;
+
   CustomersInfo({
     required this.customerEmail,
     required this.customerPassword,

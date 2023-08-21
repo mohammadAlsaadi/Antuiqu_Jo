@@ -3,11 +3,13 @@ class CarInfo {
   String carColor;
   String carModel;
   String carName;
+  String carPrice;
   String carImage;
   String carUUID;
   String ownerID;
   String customerID;
   bool isBooked;
+
   CarInfo({
     required this.carType,
     required this.carColor,
@@ -18,6 +20,7 @@ class CarInfo {
     required this.ownerID,
     required this.customerID,
     required this.isBooked,
+    required this.carPrice,
   });
 
   Map<String, dynamic> toJosn() {
@@ -26,6 +29,7 @@ class CarInfo {
       'carColor': carColor,
       'carModel': carModel,
       'carName': carName,
+      'carPrice': carPrice,
       'carImage': carImage,
       'carUUID': carUUID,
       'ownerID': ownerID,
@@ -40,6 +44,7 @@ class CarInfo {
         carColor: json['carColor'],
         carModel: json['carModel'],
         carName: json['carName'],
+        carPrice: json['carPrice'],
         carImage: json['carImage'],
         carUUID: json['carUUID'],
         ownerID: json['ownerID'],
