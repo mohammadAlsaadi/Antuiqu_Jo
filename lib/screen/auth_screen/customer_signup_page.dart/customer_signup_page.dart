@@ -1,5 +1,7 @@
+// ignore_for_file: unused_field, avoid_print
+
 import 'package:antique_jo/data/repository/owner_save_date/owner_save_data.dart';
-import 'package:antique_jo/models/owner/owners_info.dart';
+import 'package:antique_jo/models/owner/owner_Info.dart';
 import 'package:antique_jo/screen/auth_screen/customer_signup_page.dart/customer_signup_widget.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_function.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
@@ -337,7 +339,7 @@ class _CustomerSignUpPageState extends State<CustomerSignUpPage> {
 
                         String userUID = SignUpFunction.generateUID();
 
-                        OwnersInfo newUserSignup = OwnersInfo(
+                        OwnerInfo newUserSignup = OwnerInfo(
                             ownerEmail: _emailController.text,
                             ownerPassword: _passwordController.text,
                             ownerUUID: userUID,

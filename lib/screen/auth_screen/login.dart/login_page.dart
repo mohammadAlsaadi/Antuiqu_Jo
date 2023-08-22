@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, unnecessary_import
 import 'package:antique_jo/data/blocs/Login_Register_bloc/login_register_bloc.dart';
 import 'package:antique_jo/screen/auth_screen/login.dart/login_function.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_screen.dart';
@@ -170,13 +170,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.pushAndRemoveUntil(
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           const OwnerSignUpPage(),
                                     ),
-                                    (route) => false,
                                   );
                                 },
                                 child: Text(

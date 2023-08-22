@@ -1,40 +1,68 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class OwnersInfo {
-  String ownerEmail;
-  String ownerPassword;
-  String ownerUUID;
-  String ownerFullName;
-  String ownerPhoneNumber;
-  String ownerShopName;
+import 'package:equatable/equatable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  OwnersInfo({
-    required this.ownerEmail,
-    required this.ownerPassword,
-    required this.ownerUUID,
-    required this.ownerFullName,
-    required this.ownerPhoneNumber,
-    required this.ownerShopName,
-  });
+class OwnersInfo extends Equatable {
+  final String? ownerUUID;
+  final String ownerEmail;
+  final String ownerPassword;
 
-  Map<String, dynamic> toJosn() {
+  final String ownerFullName;
+  final String ownerPhoneNumber;
+  final String ownerShopName;
+
+  const OwnersInfo(
+      {this.ownerUUID,
+      this.ownerEmail = '',
+      this.ownerPassword = '',
+      this.ownerFullName = '',
+      this.ownerPhoneNumber = '',
+      this.ownerShopName = ''});
+
+  OwnersInfo copyWith(
+      {String? ownerUUID,
+      String? ownerEmail,
+      String? ownerPassword,
+      String? ownerFullName,
+      String? ownerPhoneNumber,
+      String? ownerShopName}) {
+    return OwnersInfo(
+        ownerUUID: ownerUUID ?? this.ownerUUID,
+        ownerEmail: ownerEmail ?? this.ownerEmail,
+        ownerPassword: ownerPassword ?? this.ownerPassword,
+        ownerFullName: ownerFullName ?? this.ownerFullName,
+        ownerPhoneNumber: ownerPhoneNumber ?? this.ownerPhoneNumber,
+        ownerShopName: ownerShopName ?? this.ownerShopName);
+  }
+
+  factory OwnersInfo.fromSnapshot(DocumentSnapshot snap) {
+    return OwnersInfo(
+      ownerUUID: snap['ownerUUID'],
+      ownerEmail: snap['ownerEmail'],
+      ownerPassword: snap['ownerPassword'],
+      ownerFullName: snap['ownerFullName'],
+      ownerPhoneNumber: snap['ownerPhoneNumber'],
+      ownerShopName: snap['ownerShopName'],
+    );
+  }
+
+  Map<String, Object> toDocument() {
     return {
       'ownerEmail': ownerEmail,
       'ownerPassword': ownerPassword,
-      'ownerUUID': ownerUUID,
       'ownerFullName': ownerFullName,
       'ownerPhoneNumber': ownerPhoneNumber,
       'ownerShopName': ownerShopName,
     };
   }
 
-  factory OwnersInfo.fromJson(Map<String, dynamic> json) {
-    return OwnersInfo(
-      ownerEmail: json['ownerEmail'],
-      ownerPassword: json['ownerPassword'],
-      ownerUUID: json['ownerUUID'],
-      ownerFullName: json['ownerFullName'],
-      ownerPhoneNumber: json['ownerPhoneNumber'],
-      ownerShopName: json['ownerShopName'],
-    );
-  }
+  @override
+  List<Object?> get props => [
+        ownerUUID,
+        ownerEmail,
+        ownerPassword,
+        ownerFullName,
+        ownerPhoneNumber,
+        ownerShopName
+      ];
 }

@@ -8,3 +8,9 @@ class ToggleVisibilityEvent extends LoginRegisterEvent {
 
   ToggleVisibilityEvent(this.isObsecure);
 }
+
+class SignUpEvent extends LoginRegisterEvent {
+  final OwnerInfo newUserSignup;
+
+  SignUpEvent({required this.newUserSignup});
+}

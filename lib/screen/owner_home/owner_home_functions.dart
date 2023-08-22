@@ -6,7 +6,7 @@ class OwnerHomeFunctions {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(
+        builder: (context) => const LoginPage(
           isOwner: null,
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 Widget passwordException(BuildContext context) {
   double pageWidth = MediaQuery.of(context).size.width;
+  // ignore: unused_local_variable
   double pageHeight = MediaQuery.of(context).size.height;
   return Padding(
     padding: EdgeInsets.only(left: pageWidth * 0.06, right: pageWidth * 0.06),

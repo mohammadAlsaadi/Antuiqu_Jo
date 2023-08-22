@@ -1,6 +1,3 @@
-import 'package:antique_jo/models/owner/owners_info.dart';
-import 'package:flutter/material.dart';
-
 class LoginFunction {
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
