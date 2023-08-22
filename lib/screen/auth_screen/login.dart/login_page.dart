@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:antique_jo/data/blocs/Login_Register_bloc/login_register_bloc.dart';
 import 'package:antique_jo/screen/auth_screen/login.dart/login_function.dart';
-import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_page.dart';
+import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,8 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../utils/fonts/fonts.dart';
 
 class LoginPage extends StatefulWidget {
-  final bool isOwner;
-  const LoginPage({Key? key, required this.isOwner}) : super(key: key);
+  final bool? isOwner;
+  const LoginPage({Key? key, this.isOwner}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -173,7 +173,8 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => OwnerSignUpPage(),
+                                      builder: (context) =>
+                                          const OwnerSignUpPage(),
                                     ),
                                     (route) => false,
                                   );

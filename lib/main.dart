@@ -1,6 +1,6 @@
 import 'package:antique_jo/data/blocs/auth_bloc/auth_bloc.dart';
 import 'package:antique_jo/data/blocs/type_of_user/type_of_user_bloc.dart';
-import 'package:antique_jo/data/repo/auth/auth_repo.dart';
+import 'package:antique_jo/data/repository/auth/firebase_auth_repo.dart';
 
 import 'package:antique_jo/screen/type_of_user/type_of_user_screen.dart';
 import 'package:flutter/material.dart';

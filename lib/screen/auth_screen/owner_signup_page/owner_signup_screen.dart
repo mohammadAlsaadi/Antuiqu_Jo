@@ -1,8 +1,9 @@
-import 'package:antique_jo/data/repo/current_user_uid/current_user_uid.dart';
-import 'package:antique_jo/data/repo/owner_save_date/owner_save_data.dart';
+import 'package:antique_jo/data/repository/current_user_uid/current_user_uid.dart';
+import 'package:antique_jo/data/repository/owner_save_date/owner_save_data.dart';
 import 'package:antique_jo/models/owner/owners_info.dart';
 import 'package:antique_jo/screen/auth_screen/customer_signup_page.dart/customer_signup_widget.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_function.dart';
+import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -354,13 +355,13 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-                        // Navigator.pushAndRemoveUntil(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => ,
-                        //   ),
-                        //   (route) => false,
-                        // );
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OwnerHomePage(),
+                          ),
+                          (route) => false,
+                        );
                       }
                     },
                     child: const Padding(

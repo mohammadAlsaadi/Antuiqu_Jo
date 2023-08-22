@@ -1,4 +1,4 @@
-import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_page.dart';
+import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_screen.dart';
 import 'package:uuid/uuid.dart';
 
 class SignUpFunction {
