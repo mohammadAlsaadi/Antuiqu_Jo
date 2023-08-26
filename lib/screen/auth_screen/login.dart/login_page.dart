@@ -1,7 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, unnecessary_import
 import 'package:antique_jo/data/blocs/Login_Register_bloc/login_register_bloc.dart';
+import 'package:antique_jo/data/repository/auth/firebase_auth.dart';
+import 'package:antique_jo/screen/auth_screen/customer_signup_page.dart/customer_signup_page.dart';
 import 'package:antique_jo/screen/auth_screen/login.dart/login_function.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_screen.dart';
+import 'package:antique_jo/screen/cusromer_home/customer_home_screen.dart';
+import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,7 +17,7 @@ import '../../../utils/fonts/fonts.dart';
 
 class LoginPage extends StatefulWidget {
   final bool? isOwner;
-  const LoginPage({Key? key, this.isOwner}) : super(key: key);
+  const LoginPage({Key? key, required this.isOwner}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -51,6 +56,9 @@ class _LoginPageState extends State<LoginPage> {
           listener: (context, state) {
             if (state is VisibilityToggledState) {
               isObsecure = state.isObsecure;
+            }
+            if (state is LoginRegisterLoaded) {
+              _handleLogin();
             }
           },
           builder: (context, state) {
@@ -149,7 +157,13 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            BlocProvider.of<LoginRegisterBloc>(context)
+                                .add(LoginSuccessEvent(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            ));
+                          },
                           child: const Padding(
                             padding: EdgeInsets.only(
                                 left: 20, right: 20, top: 10, bottom: 10),
@@ -170,13 +184,23 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OwnerSignUpPage(),
-                                    ),
-                                  );
+                                  if (widget.isOwner == true) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OwnerSignUpPage(),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CustomerSignUpPage(),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Text(
                                   "Register",
@@ -192,5 +216,23 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _handleLogin() async {
+    try {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) {
+          if (widget.isOwner == true) {
+            return const OwnerHomePage();
+          } else {
+            return const customerHomePage();
+          }
+        }),
+        (route) => false,
+      );
+    } catch (e) {
+      print("Login error__________________________________: $e");
+    }
   }
 }

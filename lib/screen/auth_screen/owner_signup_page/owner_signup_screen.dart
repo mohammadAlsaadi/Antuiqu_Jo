@@ -1,12 +1,13 @@
 // ignore_for_file: unused_field, avoid_print
 
 import 'package:antique_jo/data/blocs/Login_Register_bloc/login_register_bloc.dart';
-import 'package:antique_jo/data/repository/current_user_uid/current_user_uid.dart';
+import 'package:antique_jo/data/repository/auth/firebase_auth.dart';
 import 'package:antique_jo/models/owner/owner_Info.dart';
 import 'package:antique_jo/screen/auth_screen/customer_signup_page.dart/customer_signup_widget.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_function.dart';
 import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -280,7 +281,7 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
                           ),
                           keyboardType: TextInputType.name,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          onSaved: (value) {
+                          onSaved: (value) async {
                             _nameController.text = value!;
                           },
                         ),
@@ -369,9 +370,10 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
 
-                              String userUID = SignUpFunction.generateUID();
+                              String? userUID =
+                                  Auth.userUIDFromFirebaseAuth().toString();
 
-                              OwnerInfo newUserSignup = OwnerInfo(
+                              OwnerInfo newOwnerModel = OwnerInfo(
                                   ownerEmail: _emailController.text,
                                   ownerPassword: _passwordController.text,
                                   ownerUUID: userUID,
@@ -380,9 +382,10 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
                                   ownerShopName: _shopNameController.text);
 
                               BlocProvider.of<LoginRegisterBloc>(context).add(
-                                  SignUpEvent(newUserSignup: newUserSignup));
-
-                              CurrentUser.signUpCurrent(userUID);
+                                  OwnerSignUpEvent(
+                                      newOwnerModel: newOwnerModel,
+                                      email: _emailController.text,
+                                      password: _passwordController.text));
 
                               const snackBar = SnackBar(
                                 content: Text('Sign up successful'),

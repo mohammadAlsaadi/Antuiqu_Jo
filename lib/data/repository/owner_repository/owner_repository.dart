@@ -1,38 +1,31 @@
-// ignore_for_file: avoid_print
+import 'dart:convert';
 
-import 'package:antique_jo/data/repository/owner_repository/firebase_owner_repository.dart';
-import 'package:antique_jo/models/owner/owners_info.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:antique_jo/models/owner/owner_Info.dart';
+import 'package:antique_jo/shared_prefrence_manager/shared_prefrence_manager.dart';
 
-class OwnerRepository extends FirebaseOwnerRepository {
-  final FirebaseFirestore _firebaseFirestore;
+class LoginRegistrationOwnerRepository {
+  static Future<void> saveOwnerData({required OwnerInfo newOwnerModel}) async {
+    final newOwnerJsonModel = json.encode(newOwnerModel.toString());
 
-  OwnerRepository({FirebaseFirestore? firebaseFirestore})
-      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+    String ownerUID = newOwnerModel.ownerUUID;
 
-  @override
-  Future<void> createOwner(OwnersInfo owner) async {
-    await _firebaseFirestore
-        .collection('owners')
-        .doc(owner.ownerUUID)
-        .set(owner.toDocument());
+    const String userType = 'owner';
+    await SharedPreferenceManager.saveString(
+        key: ownerUID, value: newOwnerJsonModel);
+    await SharedPreferenceManager.saveString(
+        key: 'currentUID', value: ownerUID);
+    await SharedPreferenceManager.saveString(
+        key: 'currentType', value: userType);
+    print('ownerUID: $ownerUID');
   }
 
-  @override
-  Stream<OwnersInfo> getUser(String ownerId) {
-    return _firebaseFirestore
-        .collection('owners')
-        .doc(ownerId)
-        .snapshots()
-        .map((snap) => OwnersInfo.fromSnapshot(snap));
+  static Future<String?> getOwnerData({required String key}) async {
+    String? ownerModel = await SharedPreferenceManager.getString(key: key);
+
+    return ownerModel;
   }
 
-  @override
-  Future<void> updateOner(OwnersInfo owner) {
-    return _firebaseFirestore
-        .collection('owners')
-        .doc(owner.ownerUUID)
-        .update(owner.toDocument())
-        .then((value) => print('owner document updated'));
+  static void removeData(String key) {
+    SharedPreferenceManager.removeData(key);
   }
 }

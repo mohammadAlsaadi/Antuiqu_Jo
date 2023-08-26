@@ -9,8 +9,33 @@ class ToggleVisibilityEvent extends LoginRegisterEvent {
   ToggleVisibilityEvent(this.isObsecure);
 }
 
-class SignUpEvent extends LoginRegisterEvent {
-  final OwnerInfo newUserSignup;
+class OwnerSignUpEvent extends LoginRegisterEvent {
+  final OwnerInfo newOwnerModel;
+  final String email;
+  final String password;
 
-  SignUpEvent({required this.newUserSignup});
+  OwnerSignUpEvent(
+      {required this.email,
+      required this.password,
+      required this.newOwnerModel});
+}
+
+class CustomerSignUpEvent extends LoginRegisterEvent {
+  final CustomersInfo newCustomerModel;
+  final String email;
+  final String password;
+
+  CustomerSignUpEvent(
+      {required this.email,
+      required this.password,
+      required this.newCustomerModel});
+}
+
+class LogoutEvent extends LoginRegisterEvent {}
+
+class LoginSuccessEvent extends LoginRegisterEvent {
+  final String email;
+  final String password;
+
+  LoginSuccessEvent({required this.email, required this.password});
 }

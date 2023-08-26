@@ -27,3 +27,5 @@ class VisibilityToggledState extends LoginRegisterState {
 
   VisibilityToggledState(this.isObsecure);
 }
+
+class LogoutState extends LoginRegisterState {}
