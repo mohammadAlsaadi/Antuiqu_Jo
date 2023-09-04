@@ -1,4 +1,4 @@
-import 'package:antique_jo/data/blocs/type_of_user/type_of_user_bloc.dart';
+import 'package:antique_jo/data/type_of_user/type_of_user/type_of_user_bloc.dart';
 import 'package:antique_jo/utils/fonts/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

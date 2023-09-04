@@ -1,13 +1,11 @@
 // ignore_for_file: unused_field, avoid_print
 
-import 'package:antique_jo/data/blocs/Login_Register_bloc/login_register_bloc.dart';
-import 'package:antique_jo/data/repository/auth/firebase_auth.dart';
-import 'package:antique_jo/models/owner/owner_Info.dart';
+import 'package:antique_jo/data/login_register/Login_Register_bloc/login_register_bloc.dart';
+import 'package:antique_jo/data/login_register/login_register_models/owner/owner_Info.dart';
 import 'package:antique_jo/screen/auth_screen/customer_signup_page.dart/customer_signup_widget.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_function.dart';
 import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -66,13 +64,7 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
             if (state is LoginRegisterLoading) {
               const CircularProgressIndicator();
             } else if (state is LoginRegisterLoaded) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const OwnerHomePage(),
-                ),
-                (route) => false,
-              );
+              _navigateToHomePage();
             } else if (state is LoginRegisterFailure) {
               const Text("Something is wrong !");
             }
@@ -356,43 +348,16 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
                             ),
                           ),
                           onPressed: () async {
-                            if (_phoneNumberController.text.isNotEmpty) {
-                              setState(() {
-                                phoneHasError = false;
-                              });
-                            }
-                            if (_phoneNumberController.text.isEmpty &&
-                                _formKey.currentState!.validate() == false) {
-                              setState(() {
-                                phoneHasError = true;
-                              });
-                            }
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
+                            _handelSignUp();
+                            OwnerInfo newOwnerModel = await ownerModelData();
 
-                              String? userUID =
-                                  Auth.userUIDFromFirebaseAuth().toString();
-
-                              OwnerInfo newOwnerModel = OwnerInfo(
-                                  ownerEmail: _emailController.text,
-                                  ownerPassword: _passwordController.text,
-                                  ownerUUID: userUID,
-                                  ownerFullName: _nameController.text,
-                                  ownerPhoneNumber: _phoneNumberController.text,
-                                  ownerShopName: _shopNameController.text);
-
-                              BlocProvider.of<LoginRegisterBloc>(context).add(
-                                  OwnerSignUpEvent(
-                                      newOwnerModel: newOwnerModel,
-                                      email: _emailController.text,
-                                      password: _passwordController.text));
-
-                              const snackBar = SnackBar(
-                                content: Text('Sign up successful'),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }
+                            BlocProvider.of<LoginRegisterBloc>(context).add(
+                              OwnerSignUpEvent(
+                                ownerModel: newOwnerModel,
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              ),
+                            );
                           },
                           child: const Padding(
                             padding: EdgeInsets.only(
@@ -411,5 +376,53 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
         ),
       ),
     );
+  }
+
+  void _handelSignUp() async {
+    if (_phoneNumberController.text.isNotEmpty) {
+      setState(() {
+        phoneHasError = false;
+      });
+    }
+    if (_phoneNumberController.text.isEmpty &&
+        _formKey.currentState!.validate() == false) {
+      setState(() {
+        phoneHasError = true;
+      });
+    }
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      const snackBar = SnackBar(
+        content: Text('Sign up successful'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  void _navigateToHomePage() async {
+    OwnerInfo newOwnerModel = await ownerModelData();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OwnerHomePage(
+          isOwner: true,
+          ownerData: newOwnerModel,
+        ),
+      ),
+      (route) => false,
+    );
+  }
+
+  Future<OwnerInfo> ownerModelData() async {
+    OwnerInfo newOwnerModel = OwnerInfo(
+        ownerEmail: _emailController.text,
+        ownerPassword: _passwordController.text,
+        ownerUUID: '',
+        ownerFullName: _nameController.text,
+        ownerPhoneNumber: _phoneNumberController.text,
+        ownerShopName: _shopNameController.text);
+
+    return newOwnerModel;
   }
 }

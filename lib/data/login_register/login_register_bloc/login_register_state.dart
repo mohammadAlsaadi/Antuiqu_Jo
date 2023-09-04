@@ -1,7 +1,5 @@
 part of 'login_register_bloc.dart';
 
-enum AuthStatus { initial, loading, success, failure }
-
 @immutable
 sealed class LoginRegisterState {}
 

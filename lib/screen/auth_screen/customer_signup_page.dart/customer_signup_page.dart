@@ -1,13 +1,11 @@
 // ignore_for_file: unused_field, avoid_print
 
-import 'package:antique_jo/data/blocs/Login_Register_bloc/login_register_bloc.dart';
-import 'package:antique_jo/data/repository/auth/firebase_auth.dart';
-import 'package:antique_jo/models/customer/customers_info.dart';
+import 'package:antique_jo/data/login_register/Login_Register_bloc/login_register_bloc.dart';
+import 'package:antique_jo/data/login_register/login_register_models/customer/customers_info.dart';
 import 'package:antique_jo/screen/auth_screen/customer_signup_page.dart/customer_signup_widget.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_function.dart';
 import 'package:antique_jo/screen/cusromer_home/customer_home_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -75,13 +73,7 @@ class _CustomerSignUpPageState extends State<CustomerSignUpPage> {
             if (state is LoginRegisterLoading) {
               const CircularProgressIndicator();
             } else if (state is LoginRegisterLoaded) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const customerHomePage(),
-                ),
-                (route) => false,
-              );
+              navigateToHomePage();
             } else if (state is LoginRegisterFailure) {
               const Text("Something is wrong !");
             }
@@ -415,61 +407,15 @@ class _CustomerSignUpPageState extends State<CustomerSignUpPage> {
                             ),
                           ),
                           onPressed: () async {
-                            if (_customerPhoneNumberController
-                                .text.isNotEmpty) {
-                              setState(() {
-                                phoneHasError = false;
-                              });
-                            }
-                            if (_customerPhoneNumberController.text.isEmpty &&
-                                _formKey.currentState!.validate() == false) {
-                              setState(() {
-                                phoneHasError = true;
-                              });
-                            }
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-
-                              // await FirebaseAuth.instance
-                              //     .createUserWithEmailAndPassword(
-                              //   email: _customerEmailController.text,
-                              //   password: _customerPasswordController.text,
-                              // );
-
-                              // String? userUID =
-                              //     FirebaseAuth.instance.currentUser!.uid;
-                              String? userUID =
-                                  Auth.userUIDFromFirebaseAuth().toString();
-
-                              CustomersInfo newUserSignup = CustomersInfo(
-                                  customerEmail: _customerEmailController.text,
-                                  customerPassword:
-                                      _customerPasswordController.text,
-                                  customerUUID: userUID,
-                                  customerFullName:
-                                      _customerFullNameController.text,
-                                  customerPhoneNumber:
-                                      _customerPhoneNumberController.text,
-                                  customerAge: _customerAge.text,
-                                  customerGender: _customerGender.text);
-                              BlocProvider.of<LoginRegisterBloc>(context).add(
-                                  CustomerSignUpEvent(
-                                      newCustomerModel: newUserSignup,
-                                      email: _customerEmailController.text,
-                                      password:
-                                          _customerPasswordController.text));
-                              // await FirebaseAuth.instance
-                              //     .createUserWithEmailAndPassword(
-                              //         email: _customerEmailController.text,
-                              //         password:
-                              //             _customerPasswordController.text);
-
-                              const snackBar = SnackBar(
-                                content: Text('Sign up successful'),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }
+                            _handelSignUp();
+                            CustomersInfo newCustomerModel =
+                                await customerModelData();
+                            BlocProvider.of<LoginRegisterBloc>(context).add(
+                                CustomerSignUpEvent(
+                                    customerModel: newCustomerModel,
+                                    email: _customerEmailController.text,
+                                    password:
+                                        _customerPasswordController.text));
                           },
                           child: const Padding(
                             padding: EdgeInsets.only(
@@ -488,5 +434,51 @@ class _CustomerSignUpPageState extends State<CustomerSignUpPage> {
         ),
       ),
     );
+  }
+
+  void _handelSignUp() async {
+    if (_customerPhoneNumberController.text.isNotEmpty) {
+      setState(() {
+        phoneHasError = false;
+      });
+    }
+    if (_customerPhoneNumberController.text.isEmpty &&
+        _formKey.currentState!.validate() == false) {
+      setState(() {
+        phoneHasError = true;
+      });
+    }
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      const snackBar = SnackBar(
+        content: Text('Sign up successful'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  void navigateToHomePage() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CustomerHomePage(
+          isOwner: false,
+        ),
+      ),
+      (route) => false,
+    );
+  }
+
+  Future<CustomersInfo> customerModelData() async {
+    CustomersInfo newCustomerModel = CustomersInfo(
+        customerEmail: _customerEmailController.text,
+        customerPassword: _customerPasswordController.text,
+        customerUUID: '',
+        customerFullName: _customerFullNameController.text,
+        customerPhoneNumber: _customerPhoneNumberController.text,
+        customerAge: _customerAge.text,
+        customerGender: _customerGender.text);
+    return newCustomerModel;
   }
 }

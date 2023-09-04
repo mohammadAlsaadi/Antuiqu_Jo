@@ -9,11 +9,11 @@ class SharedPreferenceManager {
     await prefs.setString(key, value);
   }
 
-  static Future<String?> getString({
+  static Future<String> getString({
     required String key,
   }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key);
+    return prefs.getString(key).toString();
   }
 
   static Future<void> removeData(String key) async {

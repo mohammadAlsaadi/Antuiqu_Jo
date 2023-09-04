@@ -47,6 +47,9 @@ dependencies:
   google_fonts:
   equatable: ^2.0.5
   cloud_firestore: ^4.8.5
+  firebase_messaging:
+  awesome_dialog:
+  http: 
 
 dev_dependencies:
   flutter_test:

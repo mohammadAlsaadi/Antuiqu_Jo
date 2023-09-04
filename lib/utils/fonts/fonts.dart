@@ -10,6 +10,16 @@ TextStyle appBarFont = GoogleFonts.teko(
   fontWeight: FontWeight.bold,
   decoration: TextDecoration.none,
 );
+TextStyle buttonFont = GoogleFonts.teko(
+  fontSize: 20,
+  color: white,
+  decoration: TextDecoration.none,
+);
+TextStyle bannerFont = GoogleFonts.teko(
+  fontSize: 17,
+  color: backgroundColor,
+  decoration: TextDecoration.none,
+);
 TextStyle nameOfCarFont = GoogleFonts.teko(
   fontSize: 22,
   color: white,
@@ -55,6 +65,12 @@ TextStyle modelOfCarDetailFont = GoogleFonts.staatliches(
 TextStyle infoOfCarDetailFont = GoogleFonts.poppins(
   fontSize: 15,
   color: backgroundColor,
+  decoration: TextDecoration.none,
+);
+TextStyle typeOfCarFont = GoogleFonts.staatliches(
+  fontSize: 30,
+  color: backgroundColor,
+  fontWeight: FontWeight.bold,
   decoration: TextDecoration.none,
 );
 TextStyle priceOfCarDetailFont = GoogleFonts.teko(

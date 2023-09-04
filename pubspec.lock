@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  awesome_dialog:
+    dependency: "direct main"
+    description:
+      name: awesome_dialog
+      sha256: "7da175ea284fa5da0a4d0cbdfe835c5b71d30c7b38c1770c0f27f48272ff5a08"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   bloc:
     dependency: transitive
     description:
@@ -209,6 +217,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      name: firebase_messaging
+      sha256: "6c1a2a047d6f165b7c5f947467ac5138731a2af82c7af1c12d691dbb834f6b73"
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.6.7"
+  firebase_messaging_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_messaging_platform_interface
+      sha256: bcba58d28f8cda607a323240c6d314c2c62b62ebfbb0f2d704ebefef07b52b5f
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.6"
+  firebase_messaging_web:
+    dependency: transitive
+    description:
+      name: firebase_messaging_web
+      sha256: "962d09ec9dfa486cbbc218258ad41e8ec7997a2eba46919049496e1cafd960c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.5.6"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -264,8 +296,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.0"
-  http:
+  graphs:
     dependency: transitive
+    description:
+      name: graphs
+      sha256: aedc5a15e78fc65a6e23bcd927f24c64dd995062bcd1ca6eda65a3cff92a4d19
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
+  http:
+    dependency: "direct main"
     description:
       name: http
       sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
@@ -424,6 +464,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  rive:
+    dependency: transitive
+    description:
+      name: rive
+      sha256: "0ed73d33bb501da49001510e456789c279ffa017370748bcde846693645640e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.11.15"
+  rive_common:
+    dependency: transitive
+    description:
+      name: rive_common
+      sha256: "1431b99c9f361234cc6fa9aee7987b20030622df25ff64343a4010f9446b275e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.6"
   rxdart:
     dependency: transitive
     description:

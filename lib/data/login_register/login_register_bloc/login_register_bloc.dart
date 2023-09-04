@@ -1,11 +1,10 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, avoid_print
 
-import 'package:antique_jo/data/repository/auth/firebase_auth.dart';
-import 'package:antique_jo/data/repository/customer_repository/customer_repository.dart';
-import 'package:antique_jo/data/repository/owner_repository/owner_repository.dart';
-import 'package:antique_jo/models/customer/customers_info.dart';
-import 'package:antique_jo/models/owner/owner_Info.dart';
-import 'package:antique_jo/shared_prefrence_manager/shared_prefrence_manager.dart';
+import 'package:antique_jo/data/login_register/login_register_models/owner/owner_Info.dart';
+import 'package:antique_jo/data/login_register/login_register_models/customer/customers_info.dart';
+import 'package:antique_jo/data/login_register/login_register_repository/customer_register_repository/customer_repository.dart';
+import 'package:antique_jo/data/login_register/login_register_repository/login_repository/login_repository.dart';
+import 'package:antique_jo/data/login_register/login_register_repository/owner_repository/owner_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -34,13 +33,15 @@ Future<void> _handleOwnerSignUpEvent(
     OwnerSignUpEvent event, Emitter<LoginRegisterState> emit) async {
   emit(LoginRegisterLoading());
 
-  try {
-    await LoginRegistrationOwnerRepository.saveOwnerData(
-        newOwnerModel: event.newOwnerModel);
-    Auth.createUserWithEmailAndPassword(
-        email: event.email, password: event.password);
+  LoginRegistrationOwnerRepository.isTheDataUploadedToFirestor(
+      ownerModel: event.ownerModel);
+  bool isUploaded =
+      await LoginRegistrationOwnerRepository.isTheDataUploadedToFirestor(
+          ownerModel: event.ownerModel);
+
+  if (isUploaded) {
     emit(LoginRegisterLoaded());
-  } catch (e) {
+  } else {
     emit(LoginRegisterFailure());
   }
 }
@@ -49,14 +50,15 @@ Future<void> _handleCustomerSignUpEvent(
     CustomerSignUpEvent event, Emitter<LoginRegisterState> emit) async {
   emit(LoginRegisterLoading());
 
-  try {
-    await LoginRegistrationCustomerRepository.saveCustomerData(
-        newUserModel: event.newCustomerModel);
-    Auth.createUserWithEmailAndPassword(
-        email: event.email, password: event.password);
+  await LoginRegistrationCustomerRepository.isTheDataUploadedToFirestor(
+      customerModel: event.customerModel);
+  bool isUploaded =
+      await LoginRegistrationCustomerRepository.isTheDataUploadedToFirestor(
+          customerModel: event.customerModel);
 
+  if (isUploaded) {
     emit(LoginRegisterLoaded());
-  } catch (e) {
+  } else {
     emit(LoginRegisterFailure());
   }
 }
@@ -71,19 +73,14 @@ Future<void> _handleLogOutEvent(
 
 Future<void> _handleLoginEvent(
     LoginSuccessEvent event, Emitter<LoginRegisterState> emit) async {
-  try {
-    String userUID = Auth.fitchUserUIDFromFirebase(
-            email: event.email, password: event.password)
-        .toString();
+  LoginRepository.isLoginSuccessful(
+      email: event.email, password: event.password);
+  bool isSuccessfil = await LoginRepository.isLoginSuccessful(
+      email: event.email, password: event.password);
 
-    await SharedPreferenceManager.saveString(
-      key: 'currentUID',
-      value: userUID,
-    );
-    Auth.signInWithEmailAndPassword(
-        email: event.email, password: event.password);
+  if (isSuccessfil) {
     emit(LoginRegisterLoaded());
-  } catch (e) {
-    print("Login Error from bloc: $e");
+  } else {
+    emit(LoginRegisterFailure());
   }
 }

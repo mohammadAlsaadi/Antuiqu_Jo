@@ -1,12 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, unnecessary_import
-import 'package:antique_jo/data/blocs/Login_Register_bloc/login_register_bloc.dart';
-import 'package:antique_jo/data/repository/auth/firebase_auth.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first, unnecessary_import, avoid_print
+import 'package:antique_jo/data/login_register/Login_Register_bloc/login_register_bloc.dart';
 import 'package:antique_jo/screen/auth_screen/customer_signup_page.dart/customer_signup_page.dart';
 import 'package:antique_jo/screen/auth_screen/login.dart/login_function.dart';
 import 'package:antique_jo/screen/auth_screen/owner_signup_page/owner_signup_screen.dart';
 import 'package:antique_jo/screen/cusromer_home/customer_home_screen.dart';
 import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -58,7 +56,9 @@ class _LoginPageState extends State<LoginPage> {
               isObsecure = state.isObsecure;
             }
             if (state is LoginRegisterLoaded) {
-              _handleLogin();
+              _navigateToHomePage();
+            } else if (state is LoginRegisterFailure) {
+              const Text('something wrong , try  again later');
             }
           },
           builder: (context, state) {
@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          onPressed: () async {
+                          onPressed: () {
                             BlocProvider.of<LoginRegisterBloc>(context)
                                 .add(LoginSuccessEvent(
                               email: _emailController.text,
@@ -218,15 +218,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _handleLogin() async {
+  void _navigateToHomePage() async {
     try {
-      Navigator.pushAndRemoveUntil(
+      await Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) {
           if (widget.isOwner == true) {
-            return const OwnerHomePage();
+            return const OwnerHomePage(
+              isOwner: true,
+            );
           } else {
-            return const customerHomePage();
+            return const CustomerHomePage(
+              isOwner: true,
+            );
           }
         }),
         (route) => false,
