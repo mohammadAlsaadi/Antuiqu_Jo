@@ -8,7 +8,6 @@ import 'package:antique_jo/screen/detail_page/detail_page.dart';
 import 'package:antique_jo/screen/type_of_user/type_of_user_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
 import 'package:antique_jo/utils/fonts/fonts.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

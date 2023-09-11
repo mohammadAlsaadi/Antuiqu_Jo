@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, avoid_print
 
 import 'package:antique_jo/data/add_edit/add_edit_models/car/cars_info.dart';
 import 'package:antique_jo/data/detail_page/detail_bloc/detail_bloc.dart';
@@ -10,7 +10,9 @@ import 'package:antique_jo/screen/detail_page/detail_page.dart';
 import 'package:antique_jo/screen/type_of_user/type_of_user_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
 import 'package:antique_jo/utils/fonts/fonts.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -26,6 +28,60 @@ class OwnerHomePage extends StatefulWidget {
 
 class _OwnerHomePageState extends State<OwnerHomePage> {
   List<CarInfo> carsList = [];
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  void requestPermission() async {
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission: ${settings.authorizationStatus}');
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // print('Got a message whilst in the foreground!');
+        // print('Message data: ${message.data}');
+        // print('Message from: ${message.from}');
+
+        print(
+            'message title : ${message.notification?.title} || body: ${message.notification?.body}');
+        AwesomeDialog(
+            context: context,
+            title: message.notification!.title,
+            body: Text('body :         ${message.notification!.body}'));
+        if (message.notification != null) {
+          print(
+              'Message also contained a notification: ${message.notification}');
+        }
+      });
+    }
+    String? token = await messaging.getToken(
+      vapidKey: "BGpdLRs......",
+    );
+    print('token ::::::::$token');
+  }
+
+  initalMessage() async {
+    var message = await FirebaseMessaging.instance.getInitialMessage();
+    if (message != null) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => super.widget));
+    }
+  }
+
+  @override
+  void initState() {
+    requestPermission();
+
+    initalMessage();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double pageWidth = MediaQuery.of(context).size.width;

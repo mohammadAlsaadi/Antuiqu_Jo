@@ -114,16 +114,22 @@ class _AddEditPageState extends State<AddEditPage> {
             if (state is TypeOfCarState) {
               selectedIndexForType = state.stateOfIndex;
               type = typeImages[selectedIndexForType];
-              shouldRebuild = true;
+
+              BlocProvider.of<AddEditBloc>(context).add(
+                  FitchCarImageEvent(colorOfCar: colorCar, tyoeOfCar: type));
             }
             if (state is ColorOfCarState) {
               selectedIndexForcolor = state.stateOfIndex;
               colorCar = lstOfColors[selectedIndexForcolor];
-              shouldRebuild = true;
+              BlocProvider.of<AddEditBloc>(context).add(
+                  FitchCarImageEvent(colorOfCar: colorCar, tyoeOfCar: type));
             }
             if (state is ImageOfCarState) {
               carImage = state.imageCar;
               imageOfCarSelected = state.imageCar;
+            }
+            if (state is CarLoadedState) {
+              imageUrls = state.carImages;
             }
             if (state is CarLoadingState) {
               const CircularProgressIndicator();
@@ -306,100 +312,7 @@ class _AddEditPageState extends State<AddEditPage> {
                       ),
                       Visibility(
                         visible: typeSelect && colorSelect,
-                        child: FutureBuilder<List<String>>(
-                          future: _repository.searchPhotos(
-                            carSearchQuery: type,
-                            carColor: colorCar,
-                          ),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator(
-                                color: grey,
-                              ));
-                            } else if (snapshot.hasError) {
-                              return Text(
-                                  'An error occurred: ${snapshot.error}');
-                            } else {
-                              imageUrls = snapshot.data!;
-                              return SizedBox(
-                                height: 120,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  itemCount: imageUrls.length,
-                                  itemBuilder: (context, index) {
-                                    bool isSelected;
-                                    if (carImage == imageUrls[index]) {
-                                      isSelected = true;
-                                    } else {
-                                      isSelected = false;
-                                    }
-
-                                    return SizedBox(
-                                        width: 160,
-                                        height: 100,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            BlocProvider.of<AddEditBloc>(
-                                                    context)
-                                                .add(SelectImageOfCarEvent(
-                                                    carImage:
-                                                        imageUrls[index]));
-                                            print(imageUrls[index]);
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.all(
-                                                pageHeight * 0.013),
-                                            child: Container(
-                                              width: 160,
-                                              height: 100,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: isSelected
-                                                      ? Colors.green
-                                                      : Colors.transparent,
-                                                  width: 5.0,
-                                                ),
-                                              ),
-                                              child: CachedNetworkImage(
-                                                imageUrl: imageUrls[index],
-                                                placeholder: (context, url) =>
-                                                    Center(
-                                                  child: SizedBox(
-                                                    height: 100,
-                                                    width: 150,
-                                                    child: Shimmer.fromColors(
-                                                      baseColor:
-                                                          const Color.fromARGB(
-                                                              255,
-                                                              212,
-                                                              212,
-                                                              212),
-                                                      highlightColor:
-                                                          Colors.grey[100]!,
-                                                      child: Container(
-                                                        color: Colors.white,
-                                                        width: 100,
-                                                        height: 160,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Icon(Icons.error),
-                                              ),
-                                            ),
-                                          ),
-                                        ));
-                                  },
-                                ),
-                              );
-                            }
-                          },
-                        ),
+                        child: buildImageSelector(),
                       ),
                       Padding(
                         padding: EdgeInsets.all(pageHeight * 0.013),
@@ -583,5 +496,61 @@ class _AddEditPageState extends State<AddEditPage> {
   String generateUID() {
     const uuid = Uuid();
     return uuid.v4();
+  }
+
+  Widget buildImageSelector() {
+    return SizedBox(
+        height: 120,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: imageUrls.length,
+          itemBuilder: (context, index) {
+            bool isSelected = carImage == imageUrls[index];
+            return SizedBox(
+              width: 160,
+              height: 100,
+              child: GestureDetector(
+                onTap: () {
+                  BlocProvider.of<AddEditBloc>(context)
+                      .add(SelectImageOfCarEvent(carImage: imageUrls[index]));
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Container(
+                    width: 160,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isSelected ? Colors.green : Colors.transparent,
+                        width: 5.0,
+                      ),
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrls[index],
+                      placeholder: (context, url) => Center(
+                        child: SizedBox(
+                          height: 100,
+                          width: 150,
+                          child: Shimmer.fromColors(
+                            baseColor: const Color.fromARGB(255, 212, 212, 212),
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              color: Colors.white,
+                              width: 100,
+                              height: 160,
+                            ),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ));
   }
 }

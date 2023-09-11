@@ -79,7 +79,7 @@ class _DetailPageState extends State<DetailPage> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.arrow_back_ios_new_sharp,
                                     color: appBarColor,
                                     size: 20,

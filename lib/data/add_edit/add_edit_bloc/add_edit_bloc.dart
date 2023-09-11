@@ -1,5 +1,7 @@
+import 'package:antique_jo/api_manager/pexels_api.dart';
 import 'package:antique_jo/data/add_edit/add_edit_repository/car_repository/car_repository.dart';
 import 'package:antique_jo/data/add_edit/add_edit_models/car/cars_info.dart';
+import 'package:antique_jo/data/owner_home/owner_home_bloc/owner_home_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 part 'add_edit_event.dart';
@@ -12,6 +14,7 @@ class AddEditBloc extends Bloc<AddEditEvent, AddEditState> {
     on<SelectImageOfCarEvent>(_selectImage);
     on<AddNewCarEvent>(_addCar);
     on<EditCarEvent>(_editCar);
+    on<FitchCarImageEvent>(_fitchCarImage);
   }
 }
 
@@ -60,4 +63,13 @@ Future<void> _editCar(EditCarEvent event, Emitter<AddEditState> emit) async {
   } else {
     emit(CarFailureState());
   }
+}
+
+PexelsRepository _pexelsRepository = PexelsRepository();
+Future<void> _fitchCarImage(
+    FitchCarImageEvent event, Emitter<AddEditState> emit) async {
+  List<String> carImages = await _pexelsRepository.searchPhotos(
+      carSearchQuery: event.tyoeOfCar, carColor: event.colorOfCar);
+
+  emit(CarLoadedState(carImages: carImages));
 }

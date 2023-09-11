@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'add_edit_bloc.dart';
 
 @immutable
@@ -31,4 +32,13 @@ class EditCarEvent extends AddEditEvent {
   final CarInfo carModel;
 
   EditCarEvent({required this.carModel});
+}
+
+class FitchCarImageEvent extends AddEditEvent {
+  String tyoeOfCar;
+  String colorOfCar;
+  FitchCarImageEvent({
+    required this.tyoeOfCar,
+    required this.colorOfCar,
+  });
 }

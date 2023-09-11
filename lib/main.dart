@@ -1,23 +1,106 @@
-// ignore_for_file: unused_local_variable, non_constant_identifier_names
+// ignore_for_file: unused_local_variable, non_constant_identifier_names, avoid_print, unnecessary_import
+
+import 'dart:js';
 
 import 'package:antique_jo/screen/cusromer_home/customer_home_screen.dart';
+import 'package:antique_jo/screen/notification/notification.dart';
 import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
 import 'package:antique_jo/screen/type_of_user/type_of_user_screen.dart';
+import 'package:antique_jo/services/notification_service.dart';
 import 'package:antique_jo/shared_prefrence_manager/shared_prefrence_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+// FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+// FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+void _handleMessage(RemoteMessage message) {
+  final notification = message.notification;
+  if (notification != null) {
+    final title = notification.title;
+    final body = notification.body;
+
+    // Display the notification using Flutter Local Notifications
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'channel_ID',
+      'channel name',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    final platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+
+    flutterLocalNotificationsPlugin.show(
+      0, // Notification ID (change this for each notification)
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: 'notification_data',
+    );
+  }
+
+  // Navigator.push(
+  //   context,
+  //   MaterialPageRoute(builder: (context) => NotificationPage()),
+  // );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    _handleMessage(message);
+  });
+  // final NotificationService notificationService = NotificationService();
+  // await notificationService.initialize();
+
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   notificationService.handleForegroundNotification(message);
+  // });
+
+  // var initializationSettingsAndroid =
+  //       new AndroidInitializationSettings('@mipmap/ic_launcher');
+  //        var initializationSettings =  InitializationSettings(android: initializationSettingsAndroid
+  //       );
+  //           flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  // firebaseMessaging.confiure(
+  //     onMessage: (Map<String, dynamic> message) async {
+  //       showNotification(
+  //           message['notification']['title'], message['notification']['body']);
+  //       print("onMessage: $message");
+  //     },
+  //     onLaunch: (Map<String, dynamic> message) async {
+  //       print("onLaunch: $message");
+  //       Navigator.pushNamed(context, '/notify');
+  //     },
+  //     onResume: (Map<String, dynamic> message) async {
+  //       print("onResume: $message");
+  //     },
+  //   );
 
   runApp(const MyApp());
 }

@@ -229,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
             );
           } else {
             return const CustomerHomePage(
-              isOwner: true,
+              isOwner: false,
             );
           }
         }),
