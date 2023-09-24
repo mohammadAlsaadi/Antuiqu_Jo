@@ -16,25 +16,4 @@ A  Flutter app ,"Antique Jo" is a car booking app with two user types: owners an
 https://github.com/mohammadAlsaadi/Provider-App-Shop-with-api/assets/118960271/b3b526d3-bb1e-4fc5-806c-7e1ab641125c
 
 
-owner can adda car :
-
-and can edot on it or delete it :
-
-
-and he/she can see his/her information in profile , and can change his/her name (all data adding or changing are updated to firestore).
-
-
-then he/her can logout :
-
-
-
-
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+will be continue late !.. 
