@@ -20,7 +20,7 @@ class OwnerHomeRepository {
         Map<String, dynamic> carData = doc.data();
         return CarInfo(
           carType: carData['Car type'],
-          carColor: '',
+          carColor: carData['carColor'],
           carModel: carData['Car model'],
           carName: carData['Car Name'],
           carPrice: carData['Car price'],

@@ -13,9 +13,9 @@ class TypeOfCarState extends AddEditState {
 }
 
 class ColorOfCarState extends AddEditState {
-  final int stateOfIndex;
+  final int stateOfIndexOfColor;
 
-  ColorOfCarState({required this.stateOfIndex});
+  ColorOfCarState({required this.stateOfIndexOfColor});
 }
 
 class ImageOfCarState extends AddEditState {
@@ -31,7 +31,7 @@ class EditCarSuccessfullyState extends AddEditState {}
 class CarLoadingState extends AddEditState {}
 
 class CarLoadedState extends AddEditState {
-  List<String> carImages;
+  final List<String> carImages;
   CarLoadedState({
     required this.carImages,
   });

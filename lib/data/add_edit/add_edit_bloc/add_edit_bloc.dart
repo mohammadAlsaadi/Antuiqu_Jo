@@ -1,7 +1,6 @@
 import 'package:antique_jo/api_manager/pexels_api.dart';
 import 'package:antique_jo/data/add_edit/add_edit_repository/car_repository/car_repository.dart';
 import 'package:antique_jo/data/add_edit/add_edit_models/car/cars_info.dart';
-import 'package:antique_jo/data/owner_home/owner_home_bloc/owner_home_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 part 'add_edit_event.dart';
@@ -20,12 +19,12 @@ class AddEditBloc extends Bloc<AddEditEvent, AddEditState> {
 
 Future<void> _selectType(
     SelectTypeOfCarEvent event, Emitter<AddEditState> emit) async {
-  emit(TypeOfCarState(stateOfIndex: event.selectedIndex));
+  emit(TypeOfCarState(stateOfIndex: event.selectedIndexType));
 }
 
 Future<void> _selectColor(
     SelectColorOfCarEvent event, Emitter<AddEditState> emit) async {
-  emit(ColorOfCarState(stateOfIndex: event.selectedIndex));
+  emit(ColorOfCarState(stateOfIndexOfColor: event.selectedIndexColor));
 }
 
 Future<void> _selectImage(

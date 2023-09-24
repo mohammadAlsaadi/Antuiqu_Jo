@@ -14,6 +14,8 @@ class CarRepository {
     String carPrice = car.carPrice;
     String carImage = car.carImage;
     String carUUID = car.carUUID;
+    String carColor = car.carColor;
+
     // String ownerID = car.ownerID;
     String customerUID = car.customerID;
     bool isBooked = car.isBooked;
@@ -30,6 +32,7 @@ class CarRepository {
 
       Map<String, dynamic> carDataForFirestore = {
         'Car Name': carName,
+        'carColor': carColor,
         'Car type': carType,
         'Car model': carModel,
         'Car price': carPrice,
@@ -59,6 +62,7 @@ class CarRepository {
 
     Map<String, dynamic> carDataForFirestore = {
       'Car Name': newData.carName,
+      'carColor': newData.carColor,
       'Car type': newData.carType,
       'Car model': newData.carModel,
       'Car price': newData.carPrice,

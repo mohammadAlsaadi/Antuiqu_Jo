@@ -1,12 +1,8 @@
 // ignore_for_file: unused_local_variable, non_constant_identifier_names, avoid_print, unnecessary_import
 
-import 'dart:js';
-
 import 'package:antique_jo/screen/cusromer_home/customer_home_screen.dart';
-import 'package:antique_jo/screen/notification/notification.dart';
 import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
 import 'package:antique_jo/screen/type_of_user/type_of_user_screen.dart';
-import 'package:antique_jo/services/notification_service.dart';
 import 'package:antique_jo/shared_prefrence_manager/shared_prefrence_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +35,7 @@ void _handleMessage(RemoteMessage message) {
       priority: Priority.high,
     );
 
-    final platformChannelSpecifics = NotificationDetails(
+    const platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
     );
 
@@ -51,11 +47,6 @@ void _handleMessage(RemoteMessage message) {
       payload: 'notification_data',
     );
   }
-
-  // Navigator.push(
-  //   context,
-  //   MaterialPageRoute(builder: (context) => NotificationPage()),
-  // );
 }
 
 void main() async {
@@ -65,7 +56,7 @@ void main() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  final InitializationSettings initializationSettings = InitializationSettings(
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
   await flutterLocalNotificationsPlugin.initialize(
@@ -74,33 +65,6 @@ void main() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     _handleMessage(message);
   });
-  // final NotificationService notificationService = NotificationService();
-  // await notificationService.initialize();
-
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   notificationService.handleForegroundNotification(message);
-  // });
-
-  // var initializationSettingsAndroid =
-  //       new AndroidInitializationSettings('@mipmap/ic_launcher');
-  //        var initializationSettings =  InitializationSettings(android: initializationSettingsAndroid
-  //       );
-  //           flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-  // firebaseMessaging.confiure(
-  //     onMessage: (Map<String, dynamic> message) async {
-  //       showNotification(
-  //           message['notification']['title'], message['notification']['body']);
-  //       print("onMessage: $message");
-  //     },
-  //     onLaunch: (Map<String, dynamic> message) async {
-  //       print("onLaunch: $message");
-  //       Navigator.pushNamed(context, '/notify');
-  //     },
-  //     onResume: (Map<String, dynamic> message) async {
-  //       print("onResume: $message");
-  //     },
-  //   );
 
   runApp(const MyApp());
 }
@@ -135,7 +99,7 @@ class MyApp extends StatelessWidget {
 
           String? currentUID = uidSnapshot.data;
 
-          if (currentUID != null && currentUID.isNotEmpty) {
+          if (currentUID != "null") {
             return FutureBuilder<String?>(
               future: getCurrentType(),
               builder: (context, typeSnapshot) {

@@ -25,6 +25,16 @@ TextStyle nameOfCarFont = GoogleFonts.teko(
   color: white,
   decoration: TextDecoration.none,
 );
+TextStyle nameOfProfilePage = GoogleFonts.teko(
+  fontSize: 22,
+  color: white,
+  decoration: TextDecoration.none,
+);
+TextStyle profilePagefont = GoogleFonts.teko(
+  fontSize: 22,
+  color: canNotChange,
+  decoration: TextDecoration.none,
+);
 TextStyle modelOfCarFont = GoogleFonts.teko(
   fontSize: 17,
   color: fontColorHomGreen,

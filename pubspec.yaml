@@ -52,6 +52,8 @@ dependencies:
   http: 
   flutter_local_notifications:
   async:
+  firebase_remote_config: ^4.2.5
+  fluttertoast:
 
 
 dev_dependencies:

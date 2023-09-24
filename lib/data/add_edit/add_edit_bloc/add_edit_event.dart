@@ -5,15 +5,15 @@ part of 'add_edit_bloc.dart';
 sealed class AddEditEvent {}
 
 class SelectTypeOfCarEvent extends AddEditEvent {
-  final int selectedIndex;
+  final int selectedIndexType;
 
-  SelectTypeOfCarEvent({required this.selectedIndex});
+  SelectTypeOfCarEvent({required this.selectedIndexType});
 }
 
 class SelectColorOfCarEvent extends AddEditEvent {
-  final int selectedIndex;
+  final int selectedIndexColor;
 
-  SelectColorOfCarEvent({required this.selectedIndex});
+  SelectColorOfCarEvent({required this.selectedIndexColor});
 }
 
 class SelectImageOfCarEvent extends AddEditEvent {
@@ -35,8 +35,8 @@ class EditCarEvent extends AddEditEvent {
 }
 
 class FitchCarImageEvent extends AddEditEvent {
-  String tyoeOfCar;
-  String colorOfCar;
+  final String tyoeOfCar;
+  final String colorOfCar;
   FitchCarImageEvent({
     required this.tyoeOfCar,
     required this.colorOfCar,

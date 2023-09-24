@@ -3,8 +3,11 @@
 import 'package:antique_jo/data/add_edit/add_edit_models/car/cars_info.dart';
 import 'package:antique_jo/data/customer_home/customer_bloc/customer_home_bloc.dart';
 import 'package:antique_jo/data/login_register/Login_Register_bloc/login_register_bloc.dart';
+import 'package:antique_jo/data/login_register/login_register_models/customer/customers_info.dart';
+import 'package:antique_jo/data/login_register/login_register_models/owner/owner_Info.dart';
+import 'package:antique_jo/data/profile/profile_bloc/profile_bloc.dart';
+import 'package:antique_jo/screen/Profile/profile.dart';
 import 'package:antique_jo/screen/detail_page/detail_page.dart';
-
 import 'package:antique_jo/screen/type_of_user/type_of_user_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
 import 'package:antique_jo/utils/fonts/fonts.dart';
@@ -24,6 +27,8 @@ class CustomerHomePage extends StatefulWidget {
 }
 
 class _CustomerHomePageState extends State<CustomerHomePage> {
+  CustomersInfo? customersInfo;
+  OwnerInfo? ownerInfo;
   List<CarInfo> carsList = [];
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -97,12 +102,18 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
         BlocProvider(
           create: (context) => CustomerHomeBloc()..add(AllCarFitchEvent()),
         ),
+        BlocProvider(
+          create: (context) => ProfileBloc(),
+        ),
       ],
       child: MultiBlocListener(
         listeners: [
           BlocListener<LoginRegisterBloc, LoginRegisterState>(
             listener: (context, state) {
               if (state is LogoutState) {
+                const CircularProgressIndicator(
+                  color: appBarColor,
+                );
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -113,10 +124,36 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
               }
             },
           ),
+          BlocListener<ProfileBloc, ProfileState>(
+            listener: (context, state) {
+              if (state is LoadingProfileDataState) {
+                const CircularProgressIndicator();
+              }
+              if (state is LoadedCustomerProfileDataState) {
+                customersInfo = state.customersInfo;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Profil(isOwner: false, customersInfo: customersInfo),
+                    ));
+              }
+
+              if (state is FailedLoadingProfileData) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text("Something is wrong!,refresh the page.")),
+                );
+              }
+            },
+          ),
           BlocListener<CustomerHomeBloc, CustomerHomeState>(
               listener: (context, state) {
             if (state is LoadingCarsState) {
-              const Center(child: CircularProgressIndicator());
+              const Center(
+                  child: CircularProgressIndicator(
+                color: grey,
+              ));
             }
             if (state is LoadedCarsState) {
               carsList = state.carData;
@@ -136,7 +173,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
           })
         ],
         child: BlocBuilder<CustomerHomeBloc, CustomerHomeState>(
-          builder: (context, state) {
+          builder: (scaffoldContext, state) {
             return Scaffold(
               drawer: Drawer(
                 // shadowColor: appBarColor,
@@ -165,6 +202,21 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                     ListTile(
                       title: const Row(
                         children: [
+                          Icon(Icons.person, color: buttonWhite),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text("Profile", style: TextStyle(color: buttonWhite)),
+                        ],
+                      ),
+                      onTap: () {
+                        BlocProvider.of<ProfileBloc>(scaffoldContext)
+                            .add(LoadCustomerProfileEvent(isOwner: false));
+                      },
+                    ),
+                    ListTile(
+                      title: const Row(
+                        children: [
                           Icon(Icons.logout_outlined, color: buttonWhite),
                           SizedBox(
                             width: 20,
@@ -173,8 +225,54 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                         ],
                       ),
                       onTap: () {
-                        BlocProvider.of<LoginRegisterBloc>(context)
-                            .add(LogoutEvent());
+                        showDialog(
+                            context: scaffoldContext,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: appBarColor,
+                                title: const Text(
+                                  'Logout',
+                                  style: TextStyle(color: white),
+                                ),
+                                content: const Text(
+                                  'Are you sure you want to logout?',
+                                  style: TextStyle(color: white),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                    },
+                                    child: const Text(
+                                      'Cancel',
+                                      style: TextStyle(color: white),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        BlocProvider.of<LoginRegisterBloc>(
+                                                scaffoldContext)
+                                            .add(LogoutEvent()),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: white,
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Text(
+                                          'Logout',
+                                          style: TextStyle(
+                                              color: appBarColor,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            });
                       },
                     )
                   ]),
@@ -232,147 +330,166 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                                 SizedBox(
                                   width: containerImageWidth,
                                   height: containerImageHeight,
-                                  child: Stack(children: [
-                                    CachedNetworkImage(
-                                      imageUrl: carsList[index].carImage,
-                                      width: containerImageWidth,
-                                      height: containerImageHeight,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          Shimmer.fromColors(
-                                        baseColor: const Color.fromARGB(
-                                            255, 177, 177, 177),
-                                        highlightColor: Colors.grey[100]!,
-                                        child: Container(
-                                          width: containerImageWidth,
-                                          height: containerImageHeight,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
-                                    Positioned(
-                                      child: Visibility(
-                                          visible: carsList[index].isBooked,
-                                          child: SizedBox(
-                                            child: Banner(
-                                              message: 'Booked',
-                                              location: BannerLocation.topStart,
-                                              color: white,
-                                              textStyle: bannerFont,
-                                            ),
-                                          )),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
+                                  child: Hero(
+                                    tag: 'car_${carsList[index].carImage}',
+                                    child: Stack(children: [
+                                      CachedNetworkImage(
+                                        imageUrl: carsList[index].carImage,
                                         width: containerImageWidth,
-                                        height: fogContainerHeight,
-                                        alignment: Alignment.bottomCenter,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: <Color>[
-                                              const Color.fromARGB(
-                                                      255, 71, 71, 71)
-                                                  .withAlpha(210),
-                                              const Color.fromARGB(
-                                                      31, 79, 79, 79)
-                                                  .withAlpha(210),
-                                              const Color.fromARGB(
-                                                      179, 88, 88, 88)
-                                                  .withAlpha(210),
-                                            ],
+                                        height: containerImageHeight,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            Shimmer.fromColors(
+                                          baseColor: const Color.fromARGB(
+                                              255, 177, 177, 177),
+                                          highlightColor: Colors.grey[100]!,
+                                          child: Container(
+                                            width: containerImageWidth,
+                                            height: containerImageHeight,
+                                            color: Colors.white,
                                           ),
                                         ),
-                                        child: Stack(
-                                          children: [
-                                            Positioned(
-                                              right: containerImageWidth * 0.85,
-                                              top: fogContainerHeight * 0.03,
-                                              bottom: 50,
-                                              child: SizedBox(
-                                                width: 40,
-                                                height: 40,
-                                                child: Image.asset(
-                                                    "assets/images/${carsList[index].carType}.png"),
-                                              ),
-                                            ),
-                                            Positioned(
-                                                right:
-                                                    containerImageWidth * 0.55,
-                                                top: fogContainerHeight * 0.07,
-                                                child: Align(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                          carsList[index]
-                                                              .carName,
-                                                          style: nameOfCarFont),
-                                                      Text(
-                                                          carsList[index]
-                                                              .carModel,
-                                                          style:
-                                                              modelOfCarFont),
-                                                    ],
-                                                  ),
-                                                )),
-                                            Positioned(
-                                              right: containerImageWidth * 0.05,
-                                              top: fogContainerHeight * 0.03,
-                                              child: Text(
-                                                  '${carsList[index].carPrice} \$',
-                                                  style: priceOfCarFont),
-                                            )
-                                          ],
-                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 0.4, right: 0.5),
-                                      child: Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(20),
+                                      Positioned(
+                                        child: Visibility(
+                                            visible: carsList[index].isBooked,
+                                            child: SizedBox(
+                                              child: Banner(
+                                                message: 'Booked',
+                                                location:
+                                                    BannerLocation.topStart,
+                                                color: white,
+                                                textStyle: bannerFont,
                                               ),
-                                              color: white),
-                                          width: 85,
-                                          height: 30,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 0),
-                                            child: Row(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 5),
-                                                  child: Text("Details",
-                                                      style: detailButtonFont),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: cardWidth * 0.02),
-                                                  child: const Icon(
-                                                    Icons.arrow_forward_ios,
-                                                    color: appBarColor,
-                                                  ),
-                                                )
+                                            )),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          width: containerImageWidth,
+                                          height: fogContainerHeight,
+                                          alignment: Alignment.bottomCenter,
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: <Color>[
+                                                const Color.fromARGB(
+                                                        255, 71, 71, 71)
+                                                    .withAlpha(210),
+                                                const Color.fromARGB(
+                                                        31, 79, 79, 79)
+                                                    .withAlpha(210),
+                                                const Color.fromARGB(
+                                                        179, 88, 88, 88)
+                                                    .withAlpha(210),
                                               ],
                                             ),
                                           ),
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                right:
+                                                    containerImageWidth * 0.85,
+                                                top: fogContainerHeight * 0.03,
+                                                bottom: 50,
+                                                child: SizedBox(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child: Image.asset(
+                                                      "assets/images/${carsList[index].carType}.png"),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                  right: containerImageWidth *
+                                                      0.55,
+                                                  top:
+                                                      fogContainerHeight * 0.07,
+                                                  child: Align(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                            carsList[index]
+                                                                .carName,
+                                                            style:
+                                                                nameOfCarFont),
+                                                        Text(
+                                                            carsList[index]
+                                                                .carModel,
+                                                            style:
+                                                                modelOfCarFont),
+                                                      ],
+                                                    ),
+                                                  )),
+                                              Positioned(
+                                                right:
+                                                    containerImageWidth * 0.05,
+                                                top: fogContainerHeight * 0.03,
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                        '${carsList[index].carPrice} \$',
+                                                        style: priceOfCarFont),
+                                                    const Text(
+                                                      " per week",
+                                                      style: TextStyle(
+                                                          color: grey,
+                                                          fontSize: 9),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    )
-                                  ]),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 0.4, right: 0.5),
+                                        child: Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Container(
+                                            decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(20),
+                                                ),
+                                                color: white),
+                                            width: 85,
+                                            height: 30,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 0),
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5),
+                                                    child: Text("Details",
+                                                        style:
+                                                            detailButtonFont),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: cardWidth * 0.02),
+                                                    child: const Icon(
+                                                      Icons.arrow_forward_ios,
+                                                      color: appBarColor,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ]),
+                                  ),
                                 )
                               ]),
                             ),
@@ -381,36 +498,39 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                   },
                 ),
               ),
-              bottomNavigationBar: BottomNavigationBar(
-                  unselectedItemColor: grey,
-                  fixedColor: appBarColor,
-                  backgroundColor: backgroundColor,
-                  currentIndex: _selectIndex,
-                  onTap: (int indexSelected) {
-                    setState(() {
-                      _selectIndex = indexSelected;
-                    });
+              bottomNavigationBar: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: BottomNavigationBar(
+                    unselectedItemColor: grey,
+                    fixedColor: appBarColor,
+                    backgroundColor: backgroundColor,
+                    currentIndex: _selectIndex,
+                    onTap: (int indexSelected) {
+                      setState(() {
+                        _selectIndex = indexSelected;
+                      });
 
-                    if (_selectIndex == 1) {
-                      BlocProvider.of<CustomerHomeBloc>(context)
-                          .add(MyCarFitchEvent());
-                    } else {
-                      BlocProvider.of<CustomerHomeBloc>(context)
-                          .add(AllCarFitchEvent());
-                    }
-                  },
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.car_crash,
+                      if (_selectIndex == 1) {
+                        BlocProvider.of<CustomerHomeBloc>(scaffoldContext)
+                            .add(MyCarFitchEvent());
+                      } else {
+                        BlocProvider.of<CustomerHomeBloc>(scaffoldContext)
+                            .add(AllCarFitchEvent());
+                      }
+                    },
+                    items: const <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                        icon: Icon(
+                          Icons.car_crash,
+                        ),
+                        label: 'All cars',
                       ),
-                      label: 'All cars',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.car_rental_outlined),
-                      label: 'my cars',
-                    ),
-                  ]),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.car_rental_outlined),
+                        label: 'my cars',
+                      ),
+                    ]),
+              ),
             );
           },
         ),

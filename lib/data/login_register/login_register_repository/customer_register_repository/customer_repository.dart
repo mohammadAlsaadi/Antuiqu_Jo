@@ -14,7 +14,7 @@ class LoginRegistrationCustomerRepository {
         key: 'currentType', value: userType);
   }
 
-  static Future<String?> getCustomerUID({required String key}) async {
+  static Future<String?> getData({required String key}) async {
     String? userUID = await SharedPreferenceManager.getString(key: key);
 
     return userUID;

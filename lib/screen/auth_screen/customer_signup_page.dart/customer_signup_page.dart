@@ -304,7 +304,7 @@ class _CustomerSignUpPageState extends State<CustomerSignUpPage> {
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
                                   onSaved: (value) {
-                                    _customerFullNameController.text = value!;
+                                    _customerAge.text = value!;
                                   },
                                 ),
                               ),
@@ -458,7 +458,8 @@ class _CustomerSignUpPageState extends State<CustomerSignUpPage> {
     }
   }
 
-  void navigateToHomePage() {
+  void navigateToHomePage() async {
+    // CustomersInfo newCustomerModel = await customerModelData();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(

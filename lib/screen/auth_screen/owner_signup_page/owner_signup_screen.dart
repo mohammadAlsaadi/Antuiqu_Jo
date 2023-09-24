@@ -274,7 +274,7 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
                           keyboardType: TextInputType.name,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           onSaved: (value) async {
-                            _nameController.text = value!;
+                            _shopNameController.text = value!;
                           },
                         ),
                       ),

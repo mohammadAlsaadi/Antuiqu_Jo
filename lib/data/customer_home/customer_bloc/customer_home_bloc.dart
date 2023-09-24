@@ -39,8 +39,7 @@ Future<void> _loadCustomerBookedCars(
 Future<void> _bookCar(
     BookCarEvent event, Emitter<CustomerHomeState> emit) async {
   String? customerUID =
-      await LoginRegistrationCustomerRepository.getCustomerUID(
-          key: 'currentUID');
+      await LoginRegistrationCustomerRepository.getData(key: 'currentUID');
 
   await CustomerHomeRepository.bookCarUpdate(
       event.carModel.carUUID, customerUID!, event.carModel);

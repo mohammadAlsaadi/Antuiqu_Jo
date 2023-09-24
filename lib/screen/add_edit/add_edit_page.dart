@@ -2,13 +2,14 @@
 
 import 'package:antique_jo/data/add_edit/add_edit_bloc/add_edit_bloc.dart';
 import 'package:antique_jo/data/add_edit/add_edit_models/car/cars_info.dart';
+import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
 import 'package:antique_jo/shared_prefrence_manager/shared_prefrence_manager.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
 import 'package:antique_jo/utils/fonts/fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:antique_jo/api_manager/pexels_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:uuid/uuid.dart';
 
@@ -63,15 +64,16 @@ class _AddEditPageState extends State<AddEditPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final PexelsRepository _repository = PexelsRepository();
+  // final PexelsRepository _repository = PexelsRepository();
   late String carImage = '';
   TextEditingController _carNameController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
   TextEditingController _modelOfCarController = TextEditingController();
   String imageOfCarSelected = '';
-  late String typeOfCar;
+
   late int selectCarColor;
   late int selectCarType;
+  AddEditBloc? addEditBloc;
   @override
   void initState() {
     if (widget.isEdit) {
@@ -80,8 +82,10 @@ class _AddEditPageState extends State<AddEditPage> {
       _modelOfCarController =
           TextEditingController(text: widget.carEdit!.carModel);
       carImage = widget.carEdit!.carImage;
-      typeOfCar = widget.carEdit!.carType;
+
+      type = widget.carEdit!.carType;
       colorCar = widget.carEdit!.carColor;
+
       selectedIndexForcolor = widget.carEdit!.selectedColor;
       selectedIndexForType = widget.carEdit!.selectedType;
       typeSelect = true;
@@ -119,7 +123,7 @@ class _AddEditPageState extends State<AddEditPage> {
                   FitchCarImageEvent(colorOfCar: colorCar, tyoeOfCar: type));
             }
             if (state is ColorOfCarState) {
-              selectedIndexForcolor = state.stateOfIndex;
+              selectedIndexForcolor = state.stateOfIndexOfColor;
               colorCar = lstOfColors[selectedIndexForcolor];
               BlocProvider.of<AddEditBloc>(context).add(
                   FitchCarImageEvent(colorOfCar: colorCar, tyoeOfCar: type));
@@ -141,14 +145,11 @@ class _AddEditPageState extends State<AddEditPage> {
               const Text('Something is wrong, try again');
             }
           },
-          // buildWhen: (previous, currentState) {
-          //   return currentState is ColorOfCarState ||
-          //       currentState is TypeOfCarState ||
-          //       currentState is AddCarLoadingState ||
-          //       currentState is AddCarSuccessfullyState ||
-          //       currentState is AddCarFailureState;
-          // },
           builder: (context, state) {
+            widget.isEdit
+                ? BlocProvider.of<AddEditBloc>(context).add(
+                    FitchCarImageEvent(tyoeOfCar: type, colorOfCar: colorCar))
+                : null;
             return SingleChildScrollView(
               child: Form(
                   key: _formKey,
@@ -165,15 +166,15 @@ class _AddEditPageState extends State<AddEditPage> {
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: typeImages.length,
-                            itemBuilder: (context, index) {
+                            itemBuilder: (context, indexOfType) {
                               return GestureDetector(
                                 onTap: () {
                                   BlocProvider.of<AddEditBloc>(context).add(
                                       SelectTypeOfCarEvent(
-                                          selectedIndex: index));
+                                          selectedIndexType: indexOfType));
                                   typeSelect = true;
                                 },
-                                child: selectedIndexForType == index
+                                child: selectedIndexForType == indexOfType
                                     ? Stack(
                                         children: [
                                           Container(
@@ -186,7 +187,7 @@ class _AddEditPageState extends State<AddEditPage> {
                                                 horizontal: 4),
                                             child: Center(
                                               child: Image.asset(
-                                                'assets/images/${typeImages[index]}.png',
+                                                'assets/images/${typeImages[indexOfType]}.png',
                                                 fit: BoxFit.cover,
                                                 width: 65,
                                                 height: 65,
@@ -217,7 +218,7 @@ class _AddEditPageState extends State<AddEditPage> {
                                             horizontal: 4),
                                         child: Center(
                                           child: Image.asset(
-                                            'assets/images/${typeImages[index]}.png',
+                                            'assets/images/${typeImages[indexOfType]}.png',
                                             fit: BoxFit.cover,
                                             width: 65,
                                             height: 65,
@@ -244,7 +245,7 @@ class _AddEditPageState extends State<AddEditPage> {
                                   onTap: () {
                                     BlocProvider.of<AddEditBloc>(context).add(
                                         SelectColorOfCarEvent(
-                                            selectedIndex: index));
+                                            selectedIndexColor: index));
                                     colorSelect = true;
                                   },
                                   child: selectedIndexForcolor == index
@@ -372,7 +373,7 @@ class _AddEditPageState extends State<AddEditPage> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                             ),
-                            labelText: "Car Price",
+                            labelText: "Car Price (per week)",
                             labelStyle: const TextStyle(
                               color: appBarColor,
                             ),
@@ -469,7 +470,21 @@ class _AddEditPageState extends State<AddEditPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
     }
-    Navigator.pop(context);
+    Fluttertoast.showToast(
+      msg: widget.isEdit
+          ? "The car is edited successfully"
+          : "The car is added successfully",
+      toastLength: Toast.LENGTH_SHORT,
+      timeInSecForIosWeb: 1,
+      backgroundColor: grey,
+      textColor: backgroundColor,
+      fontSize: 16.0,
+    );
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const OwnerHomePage(isOwner: true),
+        ));
   }
 
   Future<CarInfo> carModelData() async {
@@ -516,7 +531,7 @@ class _AddEditPageState extends State<AddEditPage> {
                       .add(SelectImageOfCarEvent(carImage: imageUrls[index]));
                 },
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Container(
                     width: 160,
                     height: 100,

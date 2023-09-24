@@ -9,17 +9,16 @@ part 'owner_home_state.dart';
 
 class OwnerHomeBloc extends Bloc<OwnerHomeEvent, OwnerHomeState> {
   OwnerHomeBloc() : super(LoadingCarState()) {
-    on<InitialHomeEvent>(_handelLoadCar);
-
     on<DeleteCarEvent>(_handelDeleteCar);
+    on<InitialHomeEvent>(_handelLoadCar);
   }
 }
 
 Future<void> _handelLoadCar(
     InitialHomeEvent event, Emitter<OwnerHomeState> emit) async {
-  emit(LoadingCarState());
   List<CarInfo> carsLoad = await OwnerHomeRepository.loadCarsFromFirestore();
-  await OwnerHomeRepository.loadCarsFromFirestore();
+
+  emit(LoadingCarState());
 
   if (carsLoad.isNotEmpty) {
     emit(LoadedCarState(carsLoad));
@@ -32,7 +31,6 @@ Future<void> _handelDeleteCar(
     DeleteCarEvent event, Emitter<OwnerHomeState> emit) async {
   emit(LoadingCarState());
 
-  await OwnerHomeRepository.deleteCarByDocumentUID(event.carUID);
   bool isDeleteSuccess =
       await OwnerHomeRepository.deleteCarByDocumentUID(event.carUID);
   // await HomeRepository.loadCarsFromFirestore();

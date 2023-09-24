@@ -4,6 +4,7 @@ class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _NotificationPageState createState() => _NotificationPageState();
 }
 
@@ -12,9 +13,9 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: const Text('Notifications'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Your notifications will appear here.'),
       ),
     );
