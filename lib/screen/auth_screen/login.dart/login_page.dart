@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:antique_jo/utils/colors/colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../utils/fonts/fonts.dart';
 
@@ -56,9 +57,27 @@ class _LoginPageState extends State<LoginPage> {
               isObsecure = state.isObsecure;
             }
             if (state is LoginRegisterLoaded) {
+              Fluttertoast.showToast(
+                msg: "Welcome Back !",
+                toastLength: Toast.LENGTH_SHORT,
+                timeInSecForIosWeb: 1,
+                backgroundColor: grey,
+                textColor: backgroundColor,
+                fontSize: 16.0,
+              );
               _navigateToHomePage();
             } else if (state is LoginRegisterFailure) {
               const Text('something wrong , try  again later');
+            }
+            if (state is LoginRegisterFailure) {
+              Fluttertoast.showToast(
+                msg: "Email or Password is wrong,try again",
+                toastLength: Toast.LENGTH_SHORT,
+                timeInSecForIosWeb: 1,
+                backgroundColor: grey,
+                textColor: backgroundColor,
+                fontSize: 16.0,
+              );
             }
           },
           builder: (context, state) {
@@ -236,7 +255,14 @@ class _LoginPageState extends State<LoginPage> {
         (route) => false,
       );
     } catch (e) {
-      print("Login error__________________________________: $e");
+      Fluttertoast.showToast(
+        msg: "Email or Password is wrong,try again",
+        toastLength: Toast.LENGTH_SHORT,
+        timeInSecForIosWeb: 1,
+        backgroundColor: grey,
+        textColor: backgroundColor,
+        fontSize: 16.0,
+      );
     }
   }
 }

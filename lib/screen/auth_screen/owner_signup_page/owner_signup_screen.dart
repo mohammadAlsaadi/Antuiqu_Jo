@@ -8,6 +8,7 @@ import 'package:antique_jo/screen/owner_home/owner_home_screen.dart';
 import 'package:antique_jo/utils/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 bool capitalLetterValid = false;
@@ -393,10 +394,14 @@ class _OwnerSignUpPageState extends State<OwnerSignUpPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      const snackBar = SnackBar(
-        content: Text('Sign up successful'),
+      Fluttertoast.showToast(
+        msg: "Sign Up success\n wait a moment",
+        toastLength: Toast.LENGTH_SHORT,
+        timeInSecForIosWeb: 1,
+        backgroundColor: grey,
+        textColor: backgroundColor,
+        fontSize: 16.0,
       );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

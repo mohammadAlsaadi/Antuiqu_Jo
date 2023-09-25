@@ -20,7 +20,8 @@ class PexelsRepository {
       final response = await _dio.get(
         apiUrl,
         options: Options(headers: {
-          'Authorization': '',
+          'Authorization':
+              '1mu6FAoFt43hcHf1d3FqPKcXfZFDKjy33o3jvUA18mpBHeBhqQMZDTqF',
         }),
       );
 
