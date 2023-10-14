@@ -12,8 +12,9 @@ A  Flutter app ,"Antique Jo" is a car booking app with two user types: owners an
 
 2.1.1- when you choosing type , you have to signup/login (owner type choosing)
 
+<img src="https://github.com/mohammadAlsaadi/Antuiqu_Jo/assets/118960271/27caa355-99b7-41e7-8b9a-2a5a4886308b" alt="typeOfUser" width="150" height="290">
+<img src="https://github.com/mohammadAlsaadi/Antuiqu_Jo/assets/118960271/dc57fb02-5251-46bf-8eb2-ee43383304a7" alt="typeOfUser" width="150" height="290">
 
-https://github.com/mohammadAlsaadi/Provider-App-Shop-with-api/assets/118960271/b3b526d3-bb1e-4fc5-806c-7e1ab641125c
 
 
 2.1.2- when signup/login you will navigate to Home page (owner type)
@@ -69,7 +70,9 @@ and can change his/her name from his/her profil :
 <img src="https://github.com/mohammadAlsaadi/Antuiqu_Jo/assets/118960271/547d2b0f-ac61-4c15-9283-4515b0526124" alt="typeOfUser" width="150" height="290">
 <img src="https://github.com/mohammadAlsaadi/Antuiqu_Jo/assets/118960271/bff41712-8233-4dc7-b5d1-5f65e911aa2a" alt="typeOfUser" width="150" height="290">
 
-## I hope you liked the application
+## this just show you some validaion in signup page : 
+https://github.com/mohammadAlsaadi/Provider-App-Shop-with-api/assets/118960271/b3b526d3-bb1e-4fc5-806c-7e1ab641125c
+# I hope you liked the application
 this app use state management (BLoC) And Dio API,i also use firebase services like(firebase Auth,firestore,and firebase messaging)
 ..
 .
